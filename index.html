@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预知轮回</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&family=Courier+Prime&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 标题栏 -->
+        <header class="game-header">
+            <h1>预知轮回</h1>
+            <div class="header-controls">
+                <button id="saveBtn" title="保存游戏"><i class="fas fa-save"></i></button>
+                <button id="loadBtn" title="加载游戏"><i class="fas fa-folder-open"></i></button>
+                <button id="restartBtn" title="重新开始"><i class="fas fa-redo"></i></button>
+                <button id="helpBtn" title="帮助"><i class="fas fa-question-circle"></i></button>
+            </div>
+        </header>
+
+        <div class="game-main">
+            <!-- 左侧：视觉展示区 -->
+            <div class="visual-area">
+                <!-- 角色立绘容器 -->
+                <div class="character-container">
+                    <div class="character" id="characterXiaoTu">
+                        <img src="assets/images/characters/xiaotu.png" alt="小兔" class="character-image" onerror="this.style.display='block'; this.src=''; this.alt='';">
+                        <div class="character-name">小兔</div>
+                    </div>
+                    <div class="character" id="characterFoxDad">
+                        <img src="assets/images/characters/foxdad.png" alt="狐狸爸爸" class="character-image" onerror="this.style.display='block'; this.src=''; this.alt='';">
+                        <div class="character-name">狐狸爸爸</div>
+                    </div>
+                </div>
+                
+                <!-- 场景背景 -->
+                <div class="scene-background" id="sceneBackground"></div>
+                
+                <!-- 对话框 -->
+                <div class="dialogue-box" id="dialogueBox">
+                    <div class="speaker-name" id="speakerName"></div>
+                    <div class="dialogue-text" id="dialogueText"></div>
+                    <div class="dialogue-controls">
+                        <button class="continue-btn" id="continueBtn">继续 <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- 梦境特效 -->
+                <div class="dream-effect" id="dreamEffect"></div>
+            </div>
+
+            <!-- 右侧：状态面板 -->
+            <div class="status-panel">
+                <!-- 游戏状态 -->
+                <div class="status-card">
+                    <h3><i class="fas fa-heartbeat"></i> 状态监控</h3>
+                    <div class="status-item">
+                        <span>精神值</span>
+                        <div class="status-bar">
+                            <div class="status-fill" id="mentalHealthBar"></div>
+                            <span class="status-value" id="mentalHealthValue">100%</span>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <span>信任度</span>
+                        <div class="status-bar">
+                            <div class="status-fill" id="trustBar"></div>
+                            <span class="status-value" id="trustValue">80%</span>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <span>剩余天数</span>
+                        <div class="status-value-large" id="remainingDays">30</div>
+                    </div>
+                </div>
+
+                <!-- 线索面板 -->
+                <div class="status-card">
+                    <h3><i class="fas fa-search"></i> 线索收集</h3>
+                    <div class="clues-container" id="cluesContainer">
+                        <!-- 线索将通过JS动态添加 -->
+                    </div>
+                </div>
+
+                <!-- 物品面板 -->
+                <div class="status-card">
+                    <h3><i class="fas fa-gem"></i> 物品栏</h3>
+                    <div class="inventory">
+                        <div class="inventory-item active" id="ringItem" title="命运戒指">
+                            <i class="fas fa-ring"></i>
+                            <span class="item-count">1</span>
+                        </div>
+                    </div>
+                    <div class="inventory-desc" id="ringDesc">
+                        <strong>命运戒指</strong><br>
+                        <small>剩余时间：<span id="ringTime">30天</span></small>
+                    </div>
+                </div>
+
+                <!-- 决策记录 -->
+                <div class="status-card">
+                    <h3><i class="fas fa-history"></i> 决策记录</h3>
+                    <div class="decision-log" id="decisionLog">
+                        <!-- 决策记录将通过JS动态添加 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部：选项区域 -->
+        <div class="choices-area" id="choicesArea">
+            <!-- 选项将通过JS动态生成 -->
+        </div>
+
+        <!-- 推理分析界面 -->
+        <div class="analysis-overlay" id="analysisOverlay">
+            <div class="analysis-container">
+                <div class="analysis-header">
+                    <h2><i class="fas fa-brain"></i> 狐狸爸爸的分析</h2>
+                    <button class="close-analysis" id="closeAnalysisBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="analysis-content" id="analysisContent">
+                    <!-- 分析内容将通过JS动态生成 -->
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- 帮助弹窗 -->
+        <div class="modal-overlay" id="helpModal">
+            <div class="modal-content">
+                <h2><i class="fas fa-question-circle"></i> 游戏指南</h2>
+                <div class="help-content">
+                    <h3>游戏目标</h3>
+                    <p>你扮演小兔，一名商学院学生，意外获得了一枚可以预知未来的戒指。但戒指附有诅咒：必须在一个月内转卖，否则会遭遇不幸。你需要利用预知能力，同时避免预知中的死亡结局。</p>
+                    
+                    <h3>核心机制</h3>
+                    <ul>
+                        <li><strong>精神值</strong>：频繁使用戒指会降低精神值，影响预知准确性</li>
+                        <li><strong>信任度</strong>：与狐狸爸爸的信任关系影响剧情发展和结局</li>
+                        <li><strong>线索收集</strong>：收集线索帮助推理真相</li>
+                        <li><strong>时间限制</strong>：你只有30天时间</li>
+                    </ul>
+                    
+                    <h3>操作说明</h3>
+                    <ul>
+                        <li>点击选项进行选择</li>
+                        <li>点击"继续"按钮推进对话</li>
+                        <li>右键点击可查看历史记录</li>
+                        <li>随时可以保存/加载游戏进度</li>
+                    </ul>
+                </div>
+                <div class="modal-buttons">
+                    <button id="closeHelpBtn">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="resource-config.js"></script>
+    <script src="game-data.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 确保游戏数据加载完成
+        window.addEventListener('load', function() {
+            console.log('所有资源加载完成');
+            
+            // 延迟初始化，确保DOM完全就绪
+            setTimeout(function() {
+                if (typeof initGame === 'function') {
+                    initGame();
+                } else {
+                    console.error('initGame函数未定义');
+                    document.body.innerHTML = `
+                        <div style="color: white; text-align: center; padding: 50px;">
+                            <h2>游戏启动失败</h2>
+                            <p>请检查控制台错误信息并刷新页面</p>
+                        </div>
+                    `;
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
