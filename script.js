@@ -176,6 +176,13 @@ function initElements() {
 function initGame() {
     console.log('游戏初始化...');
     
+    // 防止重复初始化
+    if (gameLoaded) {
+        console.warn('游戏已初始化，跳过重复初始化');
+        return;
+    }
+    gameLoaded = true;
+
     // 初始化游戏状态
     initializeGameState();
     
@@ -271,14 +278,15 @@ function startGame() {
             showErrorMessage('游戏启动失败，请刷新页面重试');
         }
     } else {
-        // 加载上次场景
+        // 加载上次场景（稳健解析：chapter 为第一个'_'之前，scene 为其余部分）
         try {
-            const scenePath = gameState.currentScene.split('_');
-            // 验证场景路径长度是否足够
-            if (scenePath.length >= 2) {
-                const sceneResult = showScene(scenePath[0], scenePath[1]);
+            const savedScene = gameState.currentScene || '';
+            const firstUnderscore = savedScene.indexOf('_');
+            if (firstUnderscore > 0) {
+                const chapter = savedScene.substring(0, firstUnderscore);
+                const scene = savedScene.substring(firstUnderscore + 1);
+                const sceneResult = showScene(chapter, scene);
                 if (sceneResult === false) {
-                    // 如果场景加载失败，回到第一章开始
                     console.warn('保存的场景加载失败，返回第一章');
                     showScene('chapter1', 'scene1');
                     gameState.hasSeenIntro = true;
@@ -677,6 +685,8 @@ function showNextDialogue() {
                 }
             }
         }, delay);
+        // 将对话定时器登记到 timerManager，便于在场景切换时统一清理
+        timerManager.addInterval(textAnimationInterval);
     }
     
     // 显示选择项或继续按钮
@@ -1165,17 +1175,17 @@ function hideChoices() {
 
 // 应用效果（改变状态值）
 function applyEffect(effect) {
-    if (effect.mentalHealth) {
-        gameState.mentalHealth = Math.max(0, Math.min(100, gameState.mentalHealth + effect.mentalHealth));
+    if (effect && effect.mentalHealth !== undefined) {
+        gameState.mentalHealth = Math.max(0, Math.min(100, gameState.mentalHealth + Number(effect.mentalHealth)));
     }
     
-    if (effect.trust) {
-        gameState.trust = Math.max(0, Math.min(100, gameState.trust + effect.trust));
+    if (effect && effect.trust !== undefined) {
+        gameState.trust = Math.max(0, Math.min(100, gameState.trust + Number(effect.trust)));
     }
     
     updateGameUI();
     saveGame();
-}
+} 
 
 // 添加线索
 function addClue(clueId) {
