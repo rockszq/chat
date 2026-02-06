@@ -574,10 +574,18 @@ function showNextDialogue() {
     // 不再保存对话索引到游戏状态，只在场景切换时重置索引
     // gameState.currentSceneDialogIndex = currentDialogueIndex;
     
-    const dialogue = dialogueQueue[currentDialogueIndex];
+    let dialogue = dialogueQueue[currentDialogueIndex];
     
-    // 强制显示所有对话，跳过条件判断
-    let shouldShow = true;
+    // 跳过不满足条件的对话
+    while (dialogue && dialogue.condition && !checkCondition(dialogue.condition)) {
+        console.log('对话条件不满足，跳过对话索引:', currentDialogueIndex);
+        currentDialogueIndex++;
+        if (currentDialogueIndex >= dialogueQueue.length) {
+            console.log('对话结束');
+            return;
+        }
+        dialogue = dialogueQueue[currentDialogueIndex];
+    }
     
     // 设置说话者
     elements.speakerName.textContent = dialogue.speaker || '旁白';
@@ -652,6 +660,18 @@ function showNextDialogue() {
                     if (!gameState.inventory.includes(dialogue.itemId)) {
                         gameState.inventory.push(dialogue.itemId);
                         updateGameUI(); // 更新UI显示新物品
+                    }
+                }
+
+                // 设置对话标志
+                if (dialogue.flag) {
+                    if (!gameState.flags) {
+                        gameState.flags = [];
+                    }
+                    if (!gameState.flags.includes(dialogue.flag)) {
+                        gameState.flags.push(dialogue.flag);
+                        updateGameUI();
+                        saveGame();
                     }
                 }
                 

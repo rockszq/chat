@@ -256,6 +256,11 @@ window.gameData = {
                     text: '小兔将戒指戴在右手无名指上，意外的合身。一股微妙的凉意从指尖传来。'
                 },
                 {
+                    speaker: '旁白',
+                    text: '戒指在指间微微发热，仿佛回应着她的犹豫与好奇。',
+                    flag: 'wore_ring'
+                },
+                {
                     speaker: '小兔',
                     text: '这戒指...感觉有点奇怪，有种说不出的感觉。'
                 },
@@ -500,14 +505,14 @@ window.gameData = {
                     speaker: '旁白',
                     text: '接下来的几天，小兔开始测试戒指的能力。',
                     condition: {
-                        hasFlag: 'very_cautious'
+                        hasFlag: ['consulted_foxdad_early', 'careful_approach']
                     }
                 },
                 {
                     speaker: '旁白',
                     text: '尽管取得了一些成功，小兔依然保持高度警惕，仔细权衡每一次使用戒指的利弊。',
                     condition: {
-                        hasFlag: 'very_cautious'
+                        hasFlag: ['consulted_foxdad_early', 'careful_approach']
                     }
                 },
                 {
@@ -1376,16 +1381,19 @@ window.gameData = {
                         {
                             text: '使用戒指预知对方行动',
                             effect: { trust: +5 },
+                            flag: 'kept_ring',
                             next: 'chapter3_scene25_confrontation'
                         },
                         {
                             text: '尝试逃跑',
                             effect: { mentalHealth: -10 },
+                            flag: 'kept_ring',
                             next: 'chapter3_scene25_escape'
                         },
                         {
                             text: '按照计划应对',
                             effect: { trust: +10 },
+                            flag: 'ring_transferred',
                             next: 'chapter3_scene25_resolution'
                         }
                     ]
@@ -1499,7 +1507,17 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第26天清晨。经历了生死考验的小兔坐在床边，手中握着那枚差点夺走她生命的戒指。狐狸爸爸一大早就赶了过来。'
+                    text: '第26天清晨。经历了生死考验的小兔坐在床边，手中空空，戒指已经被带走。狐狸爸爸一大早就赶了过来。',
+                    condition: {
+                        hasFlag: 'ring_transferred'
+                    }
+                },
+                {
+                    speaker: '旁白',
+                    text: '第26天清晨。经历了生死考验的小兔坐在床边，手中握着那枚差点夺走她生命的戒指。狐狸爸爸一大早就赶了过来。',
+                    condition: {
+                        hasFlag: 'kept_ring'
+                    }
                 },
                 {
                     speaker: '狐狸爸爸',
