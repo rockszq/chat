@@ -529,42 +529,16 @@ function startDialogue(dialogue) {
     dialogueQueue = [...dialogue];
     console.log('对话队列长度:', dialogueQueue.length);
     
-    // 快速跳过已经显示的对话
-    while (currentDialogueIndex > 0 && currentDialogueIndex < dialogueQueue.length) {
-        // 检查当前对话是否满足条件
+    // 快速跳过不满足条件的对话
+    while (currentDialogueIndex < dialogueQueue.length) {
         const currentDlg = dialogueQueue[currentDialogueIndex];
-        let shouldShow = true;
-        
-        if (currentDlg.condition && currentDlg.condition.hasFlag) {
-            if (Array.isArray(currentDlg.condition.hasFlag)) {
-                let hasAnyFlag = false;
-                if (gameState.flags) {
-                    for (let flag of currentDlg.condition.hasFlag) {
-                        if (gameState.flags.includes(flag)) {
-                            hasAnyFlag = true;
-                            break;
-                        }
-                    }
-                }
-                if (!hasAnyFlag) {
-                    shouldShow = false;
-                }
-            } else {
-                if (!gameState.flags || !gameState.flags.includes(currentDlg.condition.hasFlag)) {
-                    shouldShow = false;
-                }
-            }
-        }
-        
-        if (shouldShow) {
-            // 如果当前对话应该显示，则停止跳过
+        if (checkCondition(currentDlg.condition)) {
             console.log('找到应该显示的对话，索引:', currentDialogueIndex);
             break;
-        } else {
-            // 如果当前对话不应该显示，跳过它
-            console.log('跳过对话，索引:', currentDialogueIndex);
-            currentDialogueIndex++;
         }
+
+        console.log('跳过条件不满足的对话，索引:', currentDialogueIndex);
+        currentDialogueIndex++;
     }
     
     console.log('开始显示对话，起始索引:', currentDialogueIndex);
@@ -573,6 +547,11 @@ function startDialogue(dialogue) {
 
 // 显示下一个对话
 function showNextDialogue() {
+    while (currentDialogueIndex < dialogueQueue.length && !checkCondition(dialogueQueue[currentDialogueIndex].condition)) {
+        console.log('showNextDialogue跳过条件不满足的对话，索引:', currentDialogueIndex);
+        currentDialogueIndex++;
+    }
+
     if (currentDialogueIndex >= dialogueQueue.length) {
         // 对话结束
         console.log('对话结束');
@@ -583,9 +562,11 @@ function showNextDialogue() {
     // gameState.currentSceneDialogIndex = currentDialogueIndex;
     
     const dialogue = dialogueQueue[currentDialogueIndex];
-    
-    // 强制显示所有对话，跳过条件判断
-    let shouldShow = true;
+
+    // 处理对话级别效果（例如 time advance 对话中附带的 effect）
+    if (dialogue.effect) {
+        applyEffect(dialogue.effect);
+    }
     
     // 设置说话者
     elements.speakerName.textContent = dialogue.speaker || '旁白';
@@ -1065,23 +1046,25 @@ function checkCondition(condition) {
         }
     }
     
-    // 检查信任度条件
-    if (condition.minTrust !== undefined) {
-        if (gameState.trust < condition.minTrust) {
+    // 检查信任度条件（兼容 trust 与 minTrust）
+    const requiredTrust = condition.trust !== undefined ? condition.trust : condition.minTrust;
+    if (requiredTrust !== undefined) {
+        if (gameState.trust < requiredTrust) {
             return false;
         }
     }
     
-    // 检查精神健康条件
-    if (condition.minMentalHealth !== undefined) {
-        if (gameState.mentalHealth < condition.minMentalHealth) {
+    // 检查精神健康条件（兼容 mentalHealth 与 minMentalHealth）
+    const requiredMentalHealth = condition.mentalHealth !== undefined ? condition.mentalHealth : condition.minMentalHealth;
+    if (requiredMentalHealth !== undefined) {
+        if (gameState.mentalHealth < requiredMentalHealth) {
             return false;
         }
     }
     
-    // 检查线索条件
-    if (condition.hasClue || condition.hasAllClues) {
-        const clueList = condition.hasClue || condition.hasAllClues;
+    // 检查线索条件（兼容 hasClue、hasAllClues、clues）
+    if (condition.hasClue || condition.hasAllClues || condition.clues) {
+        const clueList = condition.hasClue || condition.hasAllClues || condition.clues;
         if (!gameState.clues || !Array.isArray(gameState.clues)) {
             return false;
         }
