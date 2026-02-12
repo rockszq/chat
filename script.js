@@ -353,8 +353,11 @@ function showScene(chapter, scene) {
             elements.sceneBackground.style.backgroundImage = 
                 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
         };
-        const bgPath = ResourceManager.getBackgroundImage(sceneData.background).replace(/^url\(["']?(.*?)["']?\)$/,'$1');
-        bgImg.src = bgPath;
+        const bgImageValue = ResourceManager.getBackgroundImage(sceneData.background);
+        const bgPathMatch = bgImageValue.match(/^url\(["']?(.*?)["']?\)$/);
+        if (bgPathMatch && bgPathMatch[1]) {
+            bgImg.src = bgPathMatch[1];
+        }
     }
     
     // 设置角色
@@ -594,9 +597,10 @@ function showNextDialogue() {
         scheduleAutoPlay(dialogue);
         
         // 自动关闭梦境效果
-        setTimeout(() => {
+        const dreamEffectTimer = setTimeout(() => {
             elements.dreamEffect.classList.remove('active');
         }, 3000);
+        timerManager.addTimer(dreamEffectTimer);
     } else if (dialogue.special === 'ending') {
         // 结局特殊显示
         currentText = `<div style="text-align:center; font-size:1.5rem; color:#ff9fe5; margin:20px 0;">${dialogue.text}</div>`;
@@ -653,9 +657,10 @@ function applyDialogueAction(dialogue) {
     }
 
     if (dialogue.action === 'start_analysis') {
-        setTimeout(() => {
+        const analysisTimer = setTimeout(() => {
             showAnalysis(dialogue.analysis);
         }, 500);
+        timerManager.addTimer(analysisTimer);
         return;
     }
 
@@ -817,9 +822,10 @@ function handleNext(nextId) {
             }
             
             showErrorMessage(`找不到场景：${nextId}，正在返回第一章...`);
-            setTimeout(() => {
+            const fallbackTimer = setTimeout(() => {
                 showScene('chapter1', 'scene1');
             }, 2000);
+            timerManager.addTimer(fallbackTimer);
             return;
         }
         
@@ -827,9 +833,10 @@ function handleNext(nextId) {
     } else {
         console.error('无效的场景ID格式:', nextId);
         showErrorMessage('场景ID格式错误，返回第一章');
-        setTimeout(() => {
+        const invalidSceneTimer = setTimeout(() => {
             showScene('chapter1', 'scene1');
         }, 2000);
+        timerManager.addTimer(invalidSceneTimer);
     }
 }
 
@@ -1041,11 +1048,12 @@ function showErrorMessage(message) {
     document.body.appendChild(errorDiv);
     
     // 5秒后移除
-    setTimeout(() => {
+    const removeErrorTimer = setTimeout(() => {
         if (errorDiv.parentNode) {
             errorDiv.parentNode.removeChild(errorDiv);
         }
     }, 5000);
+    timerManager.addTimer(removeErrorTimer);
     
     // 同时输出到控制台
     console.error(message);
