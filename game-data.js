@@ -56,7 +56,7 @@ window.gameData = {
                         {
                             text: '先拍照发给狐狸爸爸',
                             effect: { trust: +10 },
-                            flag: 'consulted_foxdad_early',
+                            flag: 'very_cautious',
                             next: 'chapter1_scene2_cautious'
                         },
                         {
@@ -422,10 +422,6 @@ window.gameData = {
                 {
                     speaker: '狐狸爸爸',
                     text: '听起来是个不错的梦呢。有时候梦境确实会很真实。'
-                },
-                {
-                    speaker: '狐狸爸爸',
-                    text: '梦境有时候确实很神奇呢。'
                 },
                 {
                     speaker: '旁白',
