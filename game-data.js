@@ -424,10 +424,6 @@ window.gameData = {
                     text: '听起来是个不错的梦呢。有时候梦境确实会很真实。'
                 },
                 {
-                    speaker: '狐狸爸爸',
-                    text: '梦境有时候确实很神奇呢。'
-                },
-                {
                     speaker: '旁白',
                     text: '几天后的一个晚上，小兔和狐狸爸爸偶然一起玩起了王者荣耀...'
                 },
@@ -1174,7 +1170,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第20天夜里。小兔感受到了前所未有的压力，距离预言的死亡时间只剩下不到10天。',
+                    text: '第25天夜里。小兔感受到了前所未有的压力，距离预言的死亡时间只剩下不到5天。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { mentalHealth: -10 }
@@ -1209,7 +1205,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第21天。小兔彻夜研究戒指和羊皮纸的每一个细节，试图找到解除诅咒的方法。她查阅了大量关于神秘学和古代仪式的资料。',
+                    text: '第26天。小兔彻夜研究戒指和羊皮纸的每一个细节，试图找到解除诅咒的方法。她查阅了大量关于神秘学和古代仪式的资料。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { mentalHealth: -5 }
@@ -1232,7 +1228,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第21天。小兔和狐狸爸爸联手，利用他的资源和人脉寻求更多帮助。他们联系了超自然现象研究专家和安全顾问。',
+                    text: '第26天。小兔和狐狸爸爸联手，利用他的资源和人脉寻求更多帮助。他们联系了超自然现象研究专家和安全顾问。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { trust: +5 }
@@ -1254,7 +1250,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第21天。小兔开始寻找合适的戒指转交人选，试图在时间截止前找到下一位持有者。她在网上发布了隐晦的广告，同时小心谨慎地筛选潜在候选人。',
+                    text: '第26天。小兔开始寻找合适的戒指转交人选，试图在时间截止前找到下一位持有者。她在网上发布了隐晦的广告，同时小心谨慎地筛选潜在候选人。',
                     action: 'advance_time',
                     daysPassed: 1
                 },
@@ -1275,14 +1271,14 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第22天夜里。小兔的调查有了初步进展，但也发现了更令人担忧的事实：前几任持有者都是在持有戒指约25-30天时遭遇不幸。',
+                    text: '第27天夜里。小兔的调查有了初步进展，但也发现了更令人担忧的事实：前几任持有者都是在持有戒指约25-30天时遭遇不幸。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { mentalHealth: -5 }
                 },
                 {
                     speaker: '小兔',
-                    text: '我只剩下大约一周时间了...必须加快进度。',
+                    text: '只剩下大约3天时间了...我们必须加快进度。',
                     next: 'chapter3_scene22_deeper'
                 }
             ]
@@ -1298,7 +1294,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第23天。通过深入调查，小兔和狐狸爸爸发现了更多关于戒指历史的信息，以及一个可能的解决方案。',
+                    text: '第28天。通过深入调查，小兔和狐狸爸爸发现了更多关于戒指历史的信息，以及一个可能的解决方案。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { trust: +5 }
@@ -1320,7 +1316,7 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '第24天。情况变得越来越紧急，小兔必须做出最终的关键决定。她的每一步行动都可能影响最终的结果。',
+                    text: '第28天。情况变得越来越紧急，小兔必须做出最终的关键决定。她的每一步行动都可能影响最终的结果。',
                     action: 'advance_time',
                     daysPassed: 1,
                     effect: { mentalHealth: -5 }
@@ -1776,11 +1772,24 @@ window.gameData = {
         
         scene1_social_start: {
             id: 'chapter4_scene1_social_start',
-            background: 'dorm',
+            background: 'foxdad_apartment',
             characters: {
-                xiaotu: { position: 'center', emotion: 'focused' }
+                xiaotu: { position: 'left', emotion: 'focused' },
+                foxdad: { position: 'right', emotion: 'analytical' }
             },
             dialogue: [
+                {
+                    speaker: '狐狸爸爸',
+                    text: '通过社交网络调查是个不错的方向，但要注意安全。我可以帮你搭建匿名网络环境，这样既能保护你的身份，又能有效收集信息。'
+                },
+                {
+                    speaker: '小兔',
+                    text: '太好了！有你的技术支持我就放心多了。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '在狐狸爸爸的帮助下，小兔获得了安全访问暗网社区的技术手段。狐狸爸爸利用自己的专业知识，为她设置了多重防护措施。'
+                },
                 {
                     speaker: '小兔',
                     text: '我在各种论坛和社交媒体上搜索相关信息，发现了一些有趣的内容。',
@@ -1791,7 +1800,7 @@ window.gameData = {
                 },
                 {
                     speaker: '小兔',
-                    text: '这个发现让我既兴奋又害怕。暗网社区里提到了一个叫“收藏家”的神秘人物，据说他掌握着这些物品的流通渠道。',
+                    text: '这个发现让我既兴奋又害怕。暗网社区里提到了一个叫"收藏家"的神秘人物，据说他掌握着这些物品的流通渠道。',
                     effect: { mentalHealth: -10 },
                     choices: [
                         {
@@ -1804,7 +1813,7 @@ window.gameData = {
                             next: 'chapter4_scene1_social_community'
                         },
                         {
-                            text: '追踪“收藏家”的信息',
+                            text: '追踪"收藏家"的信息',
                             effect: { trust: +5 },
                             next: 'chapter4_scene1_social_collector'
                         }
@@ -1822,11 +1831,11 @@ window.gameData = {
             dialogue: [
                 {
                     speaker: '旁白',
-                    text: '通过复杂的匿名网络，小兔进入了那个神秘的社区。里面充满了关于各种诡异物品的交易和传言。',
+                    text: '在狐狸爸爸搭建的安全匿名网络环境中，小兔成功进入了那个神秘的社区。里面充满了关于各种诡异物品的交易和传言。',
                     action: 'add_clue',
                     clueId: 'organization_info',
                     special: 'clue_added',
-                    specialText: '暗网社区揭示了更大的秘密：命运之戒只是众多“诅咒物品”中的一种，这些物品由一个被称为“循环组织”的秘密团体控制，目的是研究人类在恐惧和欲望下的行为模式。'
+                    specialText: '暗网社区揭示了更大的秘密：命运之戒只是众多"诅咒物品"中的一种，这些物品由一个被称为"循环组织"的秘密团体控制，目的是研究人类在恐惧和欲望下的行为模式。'
                 },
                 {
                     speaker: '小兔',
@@ -2119,10 +2128,6 @@ window.gameData = {
                             next: 'chapter5_scene1'
                         },
                         {
-                            text: '也许我的戒指是第一枚，所以没有前持有者',
-                            next: 'chapter5_scene1'
-                        },
-                        {
                             text: '这个差异正是我们需要利用的关键',
                             effect: { trust: +5 },
                             next: 'chapter5_scene1'
@@ -2210,8 +2215,8 @@ window.gameData = {
                             next: 'chapter5_scene1'
                         },
                         {
-                            text: '寻找永久销毁戒指的方法',
-                            next: 'chapter5_scene1'
+                            text: '寻找永久封印戒指的方法',
+                            next: 'chapter5_scene_seal'
                         }
                     ]
                 }
@@ -2311,9 +2316,73 @@ window.gameData = {
                                 hasAllClues: ['ring_origin', 'previous_holders', 'cycle_pattern'],
                                 trust: 60
                             },
-                            next: 'endings_ring_destroyed'
+                            next: 'endings_seal_path'
                         }
                     ]
+                }
+            ]
+        },
+        
+        scene_seal: {
+            id: 'chapter5_scene_seal',
+            background: 'ancient_temple',
+            characters: {
+                xiaotu: { position: 'left', emotion: 'determined' },
+                foxdad: { position: 'right', emotion: 'analytical' }
+            },
+            dialogue: [
+                {
+                    speaker: '旁白',
+                    text: '经过深入研究古籍和咨询专家，小兔和狐狸爸爸找到了一种古老的封印仪式。'
+                },
+                {
+                    speaker: '狐狸爸爸',
+                    text: '根据古书记载，这枚戒指的力量源自一个古老的契约。我们可以用相反的仪式来切断它与人间的联系。'
+                },
+                {
+                    speaker: '小兔',
+                    text: '需要什么材料和步骤？'
+                },
+                {
+                    speaker: '狐狸爸爸',
+                    text: '我们需要月桂叶、纯净的泉水，还有一个特定的咒语。最重要的是，施法者必须内心纯净，没有任何恶意。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '在一个满月之夜，他们来到了城郊的一座废弃古庙。庙宇虽然破败，但依然散发着古老而神圣的气息。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '狐狸爸爸按照古法布置了封印阵法，小兔将戒指轻轻放在阵法中央。随着咒语的吟诵，戒指开始发出微弱的光芒。'
+                },
+                {
+                    speaker: '小兔',
+                    text: '我能感觉到戒指在颤抖...它似乎在抗拒。'
+                },
+                {
+                    speaker: '狐狸爸爸',
+                    text: '坚持住，封印即将完成。记住，我们不是要摧毁它，而是让它回归沉寂。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '随着最后一句咒语落下，戒指上的符文逐渐黯淡下来。那种若有若无的联系从小兔的意识中消失了。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '封印完成的那一刻，小兔感到前所未有的轻松。那些困扰她的预知画面彻底消失了。'
+                },
+                {
+                    speaker: '小兔',
+                    text: '成功了...我们真的做到了。'
+                },
+                {
+                    speaker: '狐狸爸爸',
+                    text: '是的，孩子。有时候解决问题的方法不是对抗，而是理解和转化。'
+                },
+                {
+                    speaker: '旁白',
+                    text: '【永恒封印 结局达成】',
+                    special: 'ending'
                 }
             ]
         },
@@ -2385,10 +2454,7 @@ window.gameData = {
                     choices: [
                         {
                             text: '决定一起面对最后的挑战',
-                            next: 'endings_redemption_path'
-                        },
-                        {
-                            text: '决定共同面对挑战',
+                            effect: { trust: +5 },
                             next: 'endings_redemption_path'
                         }
                     ]
@@ -2602,28 +2668,24 @@ window.gameData = {
                     },
                     dialogue: [
                         {
-                            speaker: '小兔',
-                            text: '也许...也许张明也不是真正的坏人。他只是害怕，就像我一样。'
+                            speaker: '旁白',
+                            text: '小兔和狐狸爸爸决定携手面对即将到来的命运。他们制定了详细的应对计划，包括如何识别威胁、何时寻求帮助、以及如何在关键时刻相互支援。'
                         },
                         {
                             speaker: '旁白',
-                            text: '小兔决定联系张明，不是为了对抗，而是为了理解和帮助。'
+                            text: '在第25天的夜晚，当预知中的危险临近时，狐狸爸爸陪伴在小兔身边。他们一起度过了那个充满不确定性的时刻。'
                         },
                         {
                             speaker: '旁白',
-                            text: '通过各种渠道，小兔找到了张明，并向他说明了戒指的真实情况。'
+                            text: '虽然恐惧依然存在，但小兔意识到真正的勇气不是无所畏惧，而是即使害怕也要坚持下去。有了狐狸爸爸的支持，她觉得自己能够面对任何挑战。'
                         },
                         {
                             speaker: '旁白',
-                            text: '令她意外的是，张明早已意识到诅咒的存在。他原本只是想保护自己，却陷入了恐惧的恶性循环。'
+                            text: '第二天清晨，阳光透过窗帘洒进房间。一切都平安无事。也许那个预知只是一种心理暗示，也许真正的威胁从未存在过。'
                         },
                         {
                             speaker: '旁白',
-                            text: '两人决定一起打破这个循环。他们找到了一个偏远的废弃仓库，将戒指封存其中，并在周围设置了警示标志。'
-                        },
-                        {
-                            speaker: '旁白',
-                            text: '虽然诅咒的根源并未消除，但至少它暂时不会伤害任何人。小兔和张明都获得了内心的平静。'
+                            text: '但无论如何，小兔学会了最重要的东西：不是预知未来的能力，而是相信身边人的勇气。'
                         },
                         {
                             speaker: '旁白',
@@ -2682,9 +2744,9 @@ window.gameData = {
             ]
         },
         
-        ring_destroyed: {
-            id: 'ring_destroyed',
-            title: '毁灭之路',
+        seal_path: {
+            id: 'seal_path',
+            title: '封印之路',
             condition: { trust: 60, clues: ['ring_origin', 'previous_holders', 'cycle_pattern'] },
             scenes: [
                 {
@@ -2696,27 +2758,27 @@ window.gameData = {
                     dialogue: [
                         {
                             speaker: '小兔',
-                            text: '既然无法打破循环，也许我们可以彻底摧毁它？'
+                            text: '既然无法打破循环，也许我们可以将它永远封印？'
                         },
                         {
                             speaker: '狐狸爸爸',
-                            text: '这是一个大胆的想法。如果我们能找到一种方法彻底破坏戒指，或许能终结这一切。'
+                            text: '这是个好主意。如果我们能找到一种方法将戒指永久封印，就能阻止它继续伤害他人。'
                         },
                         {
                             speaker: '旁白',
-                            text: '经过深入研究，小兔和狐狸爸爸找到了一种特殊的化学配方，据说可以破坏任何超自然物品。'
+                            text: '经过深入研究古籍，小兔和狐狸爸爸找到了一种古老的封印术，可以将邪恶物品的力量永久禁锢。'
                         },
                         {
                             speaker: '旁白',
-                            text: '在一个风雨交加的夜晚，他们启动了销毁程序。戒指在剧烈的反应中逐渐分解，散发出诡异的光芒。'
+                            text: '在一个宁静的月圆之夜，他们在古老的神社中举行了封印仪式。戒指被强大的封印符文包围，邪恶力量逐渐被压制。'
                         },
                         {
                             speaker: '旁白',
-                            text: '随着戒指的毁灭，小兔感到脑海中那些预知的画面逐渐消失。诅咒终于被终结了。'
+                            text: '随着封印的完成，小兔感到脑海中的预知画面逐渐平息。戒指的力量被永远禁锢，再也不会危害任何人。'
                         },
                         {
                             speaker: '旁白',
-                            text: '【毁灭之路 结局达成】',
+                            text: '【封印之路 结局达成】',
                             special: 'ending'
                         }
                     ]
