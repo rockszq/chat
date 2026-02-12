@@ -331,10 +331,15 @@ function showScene(chapter, scene) {
     console.log('找到场景数据:', sceneData.id);
     console.log('对话数量:', sceneData.dialogue ? sceneData.dialogue.length : 0);
     
+    const isResumingCurrentScene =
+        gameState.currentScene === sceneData.id &&
+        Number.isInteger(gameState.currentSceneDialogIndex) &&
+        gameState.currentSceneDialogIndex >= 0;
+
     currentScene = sceneData;
-    currentDialogueIndex = 0;
+    currentDialogueIndex = isResumingCurrentScene ? gameState.currentSceneDialogIndex : 0;
     gameState.currentScene = sceneData.id;
-    gameState.currentSceneDialogIndex = 0; // 重置当前场景对话索引
+    gameState.currentSceneDialogIndex = currentDialogueIndex;
     
     // 设置背景
     if (sceneData.background) {
@@ -558,10 +563,9 @@ function showNextDialogue() {
         return;
     }
     
-    // 不再保存对话索引到游戏状态，只在场景切换时重置索引
-    // gameState.currentSceneDialogIndex = currentDialogueIndex;
-    
+    // 保存当前对话索引，便于存档恢复到正确位置
     const dialogue = dialogueQueue[currentDialogueIndex];
+    gameState.currentSceneDialogIndex = currentDialogueIndex;
 
     // 处理对话级别效果（例如 time advance 对话中附带的 effect）
     if (dialogue.effect) {
@@ -640,6 +644,7 @@ function showNextDialogue() {
     }
     
     currentDialogueIndex++;
+    gameState.currentSceneDialogIndex = currentDialogueIndex;
 }
 
 function applyDialogueAction(dialogue) {
@@ -693,11 +698,13 @@ function scheduleAutoPlay(dialogue) {
     const charDelay = Math.min(textLength * 50, 3000); // 每个字符50ms，最多3秒
     const totalDelay = baseDelay + charDelay;
 
-    setTimeout(() => {
+    const autoPlayTimer = setTimeout(() => {
         if (dialogue.next && !dialogue.choices) {
             handleNext(dialogue.next);
         }
     }, totalDelay);
+
+    timerManager.addTimer(autoPlayTimer);
 }
 
 // 推进对话
@@ -963,8 +970,7 @@ function displayEnding(ending) {
         
         // 设置背景
         if (scene.background) {
-            elements.sceneBackground.style.backgroundImage = backgrounds[scene.background] || 
-                'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+            elements.sceneBackground.style.backgroundImage = ResourceManager.getBackgroundImage(scene.background);
         }
         
         // 设置角色
@@ -1197,7 +1203,7 @@ function addClue(clueId) {
         saveGame();
         
         // 显示新线索提示
-        const clueData = cluesData[clueId];
+        const clueData = window.cluesData[clueId];
         if (clueData) {
             showNotification(`获得新线索：${clueData.name}`);
         }
@@ -1291,7 +1297,7 @@ function updateCluesDisplay() {
     elements.cluesContainer.innerHTML = '';
     
     gameState.clues.forEach(clueId => {
-        const clueData = cluesData[clueId];
+        const clueData = window.cluesData[clueId];
         if (clueData) {
             const clueElement = document.createElement('div');
             clueElement.className = 'clue-item';
