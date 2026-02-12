@@ -584,9 +584,6 @@ function showNextDialogue() {
     
     const dialogue = dialogueQueue[currentDialogueIndex];
     
-    // 强制显示所有对话，跳过条件判断
-    let shouldShow = true;
-    
     // 设置说话者
     elements.speakerName.textContent = dialogue.speaker || '旁白';
     
@@ -606,9 +603,9 @@ function showNextDialogue() {
         isAnimatingText = false;
         
         // 自动关闭梦境效果
-        setTimeout(() => {
+        timerManager.addTimer(setTimeout(() => {
             elements.dreamEffect.classList.remove('active');
-        }, 3000);
+        }, 3000));
     } else if (dialogue.special === 'ending') {
         // 结局特殊显示
         currentText = `<div style="text-align:center; font-size:1.5rem; color:#ff9fe5; margin:20px 0;">${dialogue.text}</div>`;
@@ -637,9 +634,9 @@ function showNextDialogue() {
                 
                 // 检查是否有自动行动
                 if (dialogue.action === 'start_analysis') {
-                    setTimeout(() => {
+                    timerManager.addTimer(setTimeout(() => {
                         showAnalysis(dialogue.analysis);
-                    }, 500);
+                    }, 500));
                 }
                 
                 // 添加线索
@@ -677,11 +674,11 @@ function showNextDialogue() {
                     const charDelay = Math.min(dialogue.text.length * 50, 3000); // 每个字符50ms，最多3秒
                     const totalDelay = baseDelay + charDelay;
                     
-                    setTimeout(() => {
+                    timerManager.addTimer(setTimeout(() => {
                         if (dialogue.next && !dialogue.choices) {
                             handleNext(dialogue.next);
                         }
-                    }, totalDelay);
+                    }, totalDelay));
                 }
             }
         }, delay);
@@ -811,9 +808,9 @@ function handleNext(nextId) {
             }
             
             showErrorMessage(`找不到场景：${nextId}，正在返回第一章...`);
-            setTimeout(() => {
+            timerManager.addTimer(setTimeout(() => {
                 showScene('chapter1', 'scene1');
-            }, 2000);
+            }, 2000));
             return;
         }
         
@@ -821,9 +818,9 @@ function handleNext(nextId) {
     } else {
         console.error('无效的场景ID格式:', nextId);
         showErrorMessage('场景ID格式错误，返回第一章');
-        setTimeout(() => {
+        timerManager.addTimer(setTimeout(() => {
             showScene('chapter1', 'scene1');
-        }, 2000);
+        }, 2000));
     }
 }
 
@@ -964,8 +961,7 @@ function displayEnding(ending) {
         
         // 设置背景
         if (scene.background) {
-            elements.sceneBackground.style.backgroundImage = backgrounds[scene.background] || 
-                'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+            elements.sceneBackground.style.backgroundImage = ResourceManager.getBackgroundImage(scene.background);
         }
         
         // 设置角色
@@ -1390,9 +1386,9 @@ function closeAnalysis() {
     // 确保索引不小于1，防止访问负数索引
     const currentDialogue = currentDialogueIndex > 0 ? dialogueQueue[currentDialogueIndex - 1] : null;
     if (currentDialogue && currentDialogue.next) {
-        setTimeout(() => {
+        timerManager.addTimer(setTimeout(() => {
             handleNext(currentDialogue.next);
-        }, 500);
+        }, 500));
     }
 }
 
