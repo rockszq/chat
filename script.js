@@ -585,6 +585,9 @@ function showNextDialogue() {
         currentText = `<div class="dream-text">${dialogue.specialText || dialogue.text}</div>`;
         elements.dialogueText.innerHTML = currentText;
         isAnimatingText = false;
+
+        applyDialogueAction(dialogue);
+        scheduleAutoPlay(dialogue);
         
         // 自动关闭梦境效果
         setTimeout(() => {
@@ -596,6 +599,9 @@ function showNextDialogue() {
         elements.dialogueText.innerHTML = currentText;
         isAnimatingText = false;
         gameState.gameEnded = true;
+
+        applyDialogueAction(dialogue);
+        scheduleAutoPlay(dialogue);
     } else {
         // 普通文本动画
         currentText = dialogue.text;
@@ -615,55 +621,9 @@ function showNextDialogue() {
             } else {
                 clearInterval(textAnimationInterval);
                 isAnimatingText = false;
-                
-                // 检查是否有自动行动
-                if (dialogue.action === 'start_analysis') {
-                    setTimeout(() => {
-                        showAnalysis(dialogue.analysis);
-                    }, 500);
-                }
-                
-                // 添加线索
-                if (dialogue.action === 'add_clue' && dialogue.clueId) {
-                    addClue(dialogue.clueId);
-                    
-                    // 显示线索添加通知
-                    if (dialogue.special === 'clue_added' && dialogue.specialText) {
-                        showNotification(`获得新线索：${dialogue.specialText.split('：')[0] || '重要发现'}`);
-                    }
-                }
-                
-                // 添加物品
-                if (dialogue.action === 'add_item' && dialogue.itemId) {
-                    if (!gameState.inventory) {
-                        gameState.inventory = [];
-                    }
-                    if (!gameState.inventory.includes(dialogue.itemId)) {
-                        gameState.inventory.push(dialogue.itemId);
-                        updateGameUI(); // 更新UI显示新物品
-                    }
-                }
-                
-                // 时间推进
-                if (dialogue.action === 'advance_time' && dialogue.daysPassed) {
-                    gameState.currentDay += dialogue.daysPassed;
-                    gameState.ringDaysLeft -= dialogue.daysPassed;
-                    updateGameUI();
-                }
-                
-                // 自动播放 - 增加延时时间，让玩家有足够时间阅读
-                if (gameConfig.autoPlay && !dialogue.choices && dialogue.next) {
-                    // 根据文本长度动态调整延时时间
-                    const baseDelay = 2000; // 基础延时2秒
-                    const charDelay = Math.min(dialogue.text.length * 50, 3000); // 每个字符50ms，最多3秒
-                    const totalDelay = baseDelay + charDelay;
-                    
-                    setTimeout(() => {
-                        if (dialogue.next && !dialogue.choices) {
-                            handleNext(dialogue.next);
-                        }
-                    }, totalDelay);
-                }
+
+                applyDialogueAction(dialogue);
+                scheduleAutoPlay(dialogue);
             }
         }, delay);
         // 将对话定时器登记到 timerManager，便于在场景切换时统一清理
@@ -680,6 +640,64 @@ function showNextDialogue() {
     }
     
     currentDialogueIndex++;
+}
+
+function applyDialogueAction(dialogue) {
+    if (!dialogue || !dialogue.action) {
+        return;
+    }
+
+    if (dialogue.action === 'start_analysis') {
+        setTimeout(() => {
+            showAnalysis(dialogue.analysis);
+        }, 500);
+        return;
+    }
+
+    if (dialogue.action === 'add_clue' && dialogue.clueId) {
+        addClue(dialogue.clueId);
+
+        // 显示线索添加通知
+        if (dialogue.special === 'clue_added' && dialogue.specialText) {
+            showNotification(`获得新线索：${dialogue.specialText.split('：')[0] || '重要发现'}`);
+        }
+        return;
+    }
+
+    if (dialogue.action === 'add_item' && dialogue.itemId) {
+        if (!gameState.inventory) {
+            gameState.inventory = [];
+        }
+        if (!gameState.inventory.includes(dialogue.itemId)) {
+            gameState.inventory.push(dialogue.itemId);
+            updateGameUI(); // 更新UI显示新物品
+        }
+        return;
+    }
+
+    if (dialogue.action === 'advance_time' && dialogue.daysPassed) {
+        gameState.currentDay += dialogue.daysPassed;
+        gameState.ringDaysLeft -= dialogue.daysPassed;
+        updateGameUI();
+    }
+}
+
+function scheduleAutoPlay(dialogue) {
+    if (!gameConfig.autoPlay || dialogue.choices || !dialogue.next) {
+        return;
+    }
+
+    // 根据文本长度动态调整延时时间
+    const baseDelay = 2000; // 基础延时2秒
+    const textLength = (dialogue.text || '').length;
+    const charDelay = Math.min(textLength * 50, 3000); // 每个字符50ms，最多3秒
+    const totalDelay = baseDelay + charDelay;
+
+    setTimeout(() => {
+        if (dialogue.next && !dialogue.choices) {
+            handleNext(dialogue.next);
+        }
+    }, totalDelay);
 }
 
 // 推进对话
@@ -1030,36 +1048,32 @@ function showErrorMessage(message) {
 // 检查条件是否满足
 function checkCondition(condition) {
     if (!condition) return true;
-    
+
     // 检查标志条件
     if (condition.hasFlag) {
         if (!gameState.flags || !Array.isArray(gameState.flags)) {
             return false;
         }
-        
-        if (Array.isArray(condition.hasFlag)) {
-            // 多个标志，只要有一个满足即可
-            return condition.hasFlag.some(flag => gameState.flags.includes(flag));
-        } else {
-            // 单个标志
-            return gameState.flags.includes(condition.hasFlag);
+
+        const hasRequiredFlag = Array.isArray(condition.hasFlag)
+            ? condition.hasFlag.some(flag => gameState.flags.includes(flag))
+            : gameState.flags.includes(condition.hasFlag);
+
+        if (!hasRequiredFlag) {
+            return false;
         }
     }
     
     // 检查信任度条件（兼容 trust 与 minTrust）
     const requiredTrust = condition.trust !== undefined ? condition.trust : condition.minTrust;
-    if (requiredTrust !== undefined) {
-        if (gameState.trust < requiredTrust) {
-            return false;
-        }
+    if (requiredTrust !== undefined && gameState.trust < requiredTrust) {
+        return false;
     }
     
     // 检查精神健康条件（兼容 mentalHealth 与 minMentalHealth）
     const requiredMentalHealth = condition.mentalHealth !== undefined ? condition.mentalHealth : condition.minMentalHealth;
-    if (requiredMentalHealth !== undefined) {
-        if (gameState.mentalHealth < requiredMentalHealth) {
-            return false;
-        }
+    if (requiredMentalHealth !== undefined && gameState.mentalHealth < requiredMentalHealth) {
+        return false;
     }
     
     // 检查线索条件（兼容 hasClue、hasAllClues、clues）
@@ -1069,12 +1083,12 @@ function checkCondition(condition) {
             return false;
         }
         
-        if (Array.isArray(clueList)) {
-            // 需要拥有所有指定线索
-            return clueList.every(clue => gameState.clues.includes(clue));
-        } else {
-            // 单个线索
-            return gameState.clues.includes(clueList);
+        const hasRequiredClues = Array.isArray(clueList)
+            ? clueList.every(clue => gameState.clues.includes(clue))
+            : gameState.clues.includes(clueList);
+
+        if (!hasRequiredClues) {
+            return false;
         }
     }
     
@@ -1084,12 +1098,12 @@ function checkCondition(condition) {
             return false;
         }
         
-        if (Array.isArray(condition.hasItem)) {
-            // 需要拥有所有指定物品
-            return condition.hasItem.every(item => gameState.inventory.includes(item));
-        } else {
-            // 单个物品
-            return gameState.inventory.includes(condition.hasItem);
+        const hasRequiredItems = Array.isArray(condition.hasItem)
+            ? condition.hasItem.every(item => gameState.inventory.includes(item))
+            : gameState.inventory.includes(condition.hasItem);
+
+        if (!hasRequiredItems) {
+            return false;
         }
     }
     
